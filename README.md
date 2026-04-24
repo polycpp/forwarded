@@ -1,6 +1,8 @@
 # polycpp-forwarded
 
-C++ port of [forwarded](https://www.npmjs.com/package/forwarded) for [polycpp](https://github.com/enricohuang/polycpp).
+C++ companion port of [forwarded](https://www.npmjs.com/package/forwarded) for [polycpp](https://github.com/enricohuang/polycpp).
+
+`forwarded` parses the HTTP `X-Forwarded-For` header and returns the socket address followed by forwarded addresses in the same order as the upstream npm package.
 
 ## Status
 
@@ -15,15 +17,18 @@ Compatibility note:
 
 Implemented:
 
-- Planning only. Implementation has not started.
+- Planned v0 API: `parse_header`, pure address construction, and explicit `RequestInfo` adapter.
+- Planning docs are complete enough for implementation to start after strict readiness passes.
 
 Deferred:
 
-- Full feature list is tracked in `docs/divergences.md`.
+- Duck-typed Node.js `IncomingMessage` integration.
+- Live `polycpp::http` request integration.
+- Upstream benchmark harness parity.
 
 Known divergences:
 
-- None recorded yet beyond the planned `v0` scope. See `docs/divergences.md`.
+- The C++ API uses typed request data instead of dynamic `req.headers`, `req.socket`, and `req.connection` property reads.
 
 ## Prerequisites
 
@@ -42,7 +47,14 @@ cd build && ctest --output-on-failure
 ## Usage
 
 ```cpp
-// Usage examples will be added after the first implemented API slice.
+#include <polycpp/forwarded/forwarded.hpp>
+
+polycpp::forwarded::RequestInfo req;
+req.socket_remote_address = "127.0.0.1";
+req.headers["X-Forwarded-For"] = "10.0.0.2, 10.0.0.1";
+
+polycpp::forwarded::AddressList addresses = polycpp::forwarded::forwarded(req);
+// addresses == {"127.0.0.1", "10.0.0.1", "10.0.0.2"}
 ```
 
 ## License
