@@ -88,11 +88,11 @@ For every future dependency, also choose a license strategy before coding:
 - manually observed operations: backwards comma-list parsing, space-only trimming, skipped blank entries, and request property reads through `req.headers`, `req.socket.remoteAddress`, and `req.connection.remoteAddress`
 - C++ replacements: `std::string_view`, `std::vector<std::string>`, `HeaderMap`, explicit socket/connection fields, and manual comma-list parsing
 
-### Framework object API usage
+### Framework object boundary usage
 
-- analyzer-reported framework object calls or mutations under libgen schema 3: none
+- analyzer-reported framework object accesses under libgen schema 4: `req.headers.x-forwarded-for read` (1), `req.socket read` (1), `req.socket.remoteAddress read` (1), `req.connection.remoteAddress read` (1)
 - manual review decision: upstream reads request-like object fields; expose pure `parse_header(...)` and `forwarded(remote_address, header)` helpers plus an explicit `RequestInfo` adapter; do not require C++ callers to provide dynamic `req.headers` or nested `socket`/`connection` objects
-- analyzer gap: schema 3 detects likely framework method calls and mutations but not framework object property reads; update `libgen` after this port
+- libgen feedback incorporated: schema 4 now detects framework object property reads that schema 3 missed
 
 ## Porting decisions
 

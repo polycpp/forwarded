@@ -11,9 +11,9 @@
 | missing `req` JavaScript `TypeError` | non-null C++ references plus `polycpp::TypeError` for missing remote address | adapted | C++ avoids nullable request APIs and validates adapter content. |
 | upstream benchmark entry point | no public C++ symbol | deferred | Benchmark parity is outside v0 scope. |
 
-## Framework object mutation review
+## Framework object boundary review
 
-- Upstream mutates framework/request/response/context objects: no mutation; upstream reads a Node request-like object.
+- Upstream reads or mutates framework/request/response/context objects: yes, upstream reads a Node request-like object and does not mutate it.
 - Upstream fields or methods read: `req.headers['x-forwarded-for']`, `req.socket.remoteAddress`, and `req.connection.remoteAddress`.
 - Upstream fields or methods written: none.
 - C++ adapter boundary: expose pure parser/address helpers plus `RequestInfo` for explicit request data; do not require duck-typed request objects.

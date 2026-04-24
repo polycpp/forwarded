@@ -61,7 +61,7 @@ Legend:
 - [x] major public `v0` APIs mapped
 - [x] direct vs adapted vs deferred status recorded
 - [x] dynamic typing adaptations recorded
-- [x] framework object mutation reviewed
+- [x] framework object boundary reviewed
 
 ## Testing
 
