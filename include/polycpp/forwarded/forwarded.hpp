@@ -21,18 +21,26 @@
 
 namespace polycpp::forwarded {
 
+/** @brief Ordered list of socket and forwarded addresses. */
 using AddressList = std::vector<std::string>;
+
+/** @brief HTTP header map used by the request adapter. */
 using HeaderMap = std::map<std::string, std::string>;
 
 /**
  * @brief Explicit C++ boundary for the upstream Node.js request object.
  *
- * Upstream reads `req.headers['x-forwarded-for']`,
- * `req.socket.remoteAddress`, and `req.connection.remoteAddress`.
+ * Upstream reads the request header named `x-forwarded-for`,
+ * `socket.remoteAddress`, and `connection.remoteAddress`.
  */
 struct RequestInfo {
+    /** @brief Request headers. `X-Forwarded-For` lookup is case-insensitive. */
     HeaderMap headers;
+
+    /** @brief Preferred remote address, matching upstream `req.socket`. */
     std::optional<std::string> socket_remote_address;
+
+    /** @brief Fallback remote address, matching upstream `req.connection`. */
     std::optional<std::string> connection_remote_address;
 };
 

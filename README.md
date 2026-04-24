@@ -17,8 +17,10 @@ Compatibility note:
 
 Implemented:
 
-- Planned v0 API: `parse_header`, pure address construction, and explicit `RequestInfo` adapter.
-- Planning docs are complete enough for implementation to start after strict readiness passes.
+- `parse_header` for pure `X-Forwarded-For` parsing.
+- Pure address construction with `forwarded(remote_address, header)`.
+- Explicit `RequestInfo` adapter for request-like data.
+- Compatibility behavior for blank entries, space trimming, and socket precedence.
 
 Deferred:
 

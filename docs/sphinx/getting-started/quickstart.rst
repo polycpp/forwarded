@@ -1,46 +1,47 @@
 Quickstart
 ==========
 
-This page walks through a minimal forwarded program end-to-end. Copy the
-snippet, run it, then jump to :doc:`../tutorials/index` for task-oriented
-walkthroughs or :doc:`../api/index` for the full reference.
+This page parses an ``X-Forwarded-For`` header and adapts explicit request data
+in the same program.
 
-The first quickstart should be written after a real public API slice exists.
-
-Full example
-------------
+Program
+-------
 
 .. code-block:: cpp
+
+   #include <iostream>
 
    #include <polycpp/forwarded/forwarded.hpp>
 
    int main() {
-       return 0;
+       auto direct = polycpp::forwarded::forwarded(
+           "127.0.0.1",
+           "10.0.0.2, 10.0.0.1");
+
+       polycpp::forwarded::RequestInfo request;
+       request.socket_remote_address = "127.0.0.1";
+       request.headers["X-Forwarded-For"] = "10.0.0.2, 10.0.0.1";
+
+       auto adapted = polycpp::forwarded::forwarded(request);
+
+       for (const auto& address : adapted) {
+           std::cout << address << '\n';
+       }
    }
 
-Compile it with the same CMake wiring from :doc:`installation`:
-
-.. code-block:: bash
-
-   cmake -B build -G Ninja
-   cmake --build build
-   ./build/my_app
-
-Expected output:
+Expected output
+---------------
 
 .. code-block:: text
 
-   (no output)
+   127.0.0.1
+   10.0.0.1
+   10.0.0.2
 
-What just happened
-------------------
+Key behavior
+------------
 
-This generated placeholder proves the documentation tree builds. Replace it with the first real user workflow before public release.
-
-Next steps
-----------
-
-- :doc:`../tutorials/index` - step-by-step walkthroughs of common tasks.
-- :doc:`../guides/index` - short how-tos for specific problems.
-- :doc:`../api/index` - every public type, function, and option.
-- :doc:`../examples/index` - runnable programs you can drop into a sandbox.
+- The first address is always the socket or connection remote address.
+- Header entries are returned from right to left, matching upstream.
+- Blank comma entries are skipped.
+- ``RequestInfo`` prefers ``socket_remote_address`` over ``connection_remote_address``.

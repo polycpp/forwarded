@@ -101,9 +101,9 @@ Legend:
 
 ## Public Release
 
-- [ ] production-grade quality confirmed
-- [ ] public documentation ready
-- [ ] generated docs placeholder pages replaced with real public documentation
-- [ ] `python3 docs/build.py` passes
-- [ ] third-party license notices complete
+- [x] production-grade quality confirmed
+- [x] public documentation ready
+- [x] generated docs placeholder pages replaced with real public documentation
+- [x] `python3 docs/build.py` passes
+- [x] third-party license notices complete
 - [ ] GitHub repo visibility changed to public

@@ -1,44 +1,50 @@
 forwarded
 =========
 
-**C++ companion port of forwarded**
+**Parse X-Forwarded-For headers for polycpp.**
 
-Generated planning documentation for the forwarded companion library. Replace placeholder user pages as APIs, examples, and tests become real.
+``polycpp::forwarded`` is a C++20 companion port of the npm ``forwarded``
+package. It preserves upstream address ordering and adapts the Node.js request
+object to explicit C++ request data.
 
 .. code-block:: cpp
 
    #include <polycpp/forwarded/forwarded.hpp>
 
+   auto addresses = polycpp::forwarded::forwarded(
+       "127.0.0.1",
+       "10.0.0.2, 10.0.0.1");
+
 .. grid:: 2
 
-   .. grid-item-card:: Drop-in familiarity
+   .. grid-item-card:: Upstream order
       :margin: 1
 
-      Keep the C++ API close to the npm package where that improves migration, and record deliberate C++ adaptations in docs/divergences.md.
+      Results start with the socket address, then forwarded entries from right
+      to left.
 
-   .. grid-item-card:: C++20 native
+   .. grid-item-card:: Pure parser
       :margin: 1
 
-      Header-only where possible, zero-overhead abstractions, ``constexpr``
-      and ``std::string_view`` throughout.
+      Parse an ``X-Forwarded-For`` string without constructing a request object.
 
-   .. grid-item-card:: Tested
+   .. grid-item-card:: Request adapter
       :margin: 1
 
-      The test plan starts from upstream tests and fixtures, then adds C++ integration and regression coverage before release.
+      Use ``RequestInfo`` instead of duck-typed ``req.headers`` and nested
+      socket properties.
 
-   .. grid-item-card:: Plays well with polycpp
+   .. grid-item-card:: Compatibility tests
       :margin: 1
 
-      Uses the same JSON value, error, and typed-event types as the rest of
-      the polycpp ecosystem - no impedance mismatch.
+      The v0 tests are adapted from upstream ``test/test.js``.
 
 Getting started
 ---------------
 
-.. code-block:: bash
+.. code-block:: cmake
 
-   # With FetchContent (recommended)
+   include(FetchContent)
    FetchContent_Declare(
        polycpp_forwarded
        GIT_REPOSITORY https://github.com/polycpp/forwarded.git
@@ -47,7 +53,7 @@ Getting started
    FetchContent_MakeAvailable(polycpp_forwarded)
    target_link_libraries(my_app PRIVATE polycpp::forwarded)
 
-:doc:`Installation <getting-started/installation>` | :doc:`Quickstart <getting-started/quickstart>` | :doc:`Tutorials <tutorials/index>` | :doc:`API reference <api/index>`
+:doc:`Installation <getting-started/installation>` | :doc:`Quickstart <getting-started/quickstart>` | :doc:`Tutorial <tutorials/parse-forwarded-for>` | :doc:`API reference <api/forwarded>`
 
 .. toctree::
    :hidden:
