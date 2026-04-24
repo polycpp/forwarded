@@ -89,15 +89,15 @@ Legend:
 
 ## Implementation
 
-- [ ] implementation started after strict readiness
-- [ ] tests added as features are implemented
-- [ ] new divergences documented immediately
+- [x] implementation started after strict readiness
+- [x] tests added as features are implemented
+- [x] new divergences documented immediately
 
 ## Validation
 
-- [ ] targeted tests pass
-- [ ] README examples match actual code
-- [ ] remaining gaps are documented
+- [x] targeted tests pass
+- [x] README examples match actual code
+- [x] remaining gaps are documented
 
 ## Public Release
 
