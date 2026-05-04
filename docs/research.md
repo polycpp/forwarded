@@ -119,9 +119,9 @@ Likely important implementation files:
 - polycpp core paths inspected: `<polycpp checkout>/include/polycpp/http/headers.hpp`, `<polycpp checkout>/include/polycpp/http/http.hpp`, `<polycpp checkout>/include/polycpp/http/request_response.hpp`, `<polycpp checkout>/include/polycpp/net/net.hpp`, `<polycpp checkout>/include/polycpp/io/{tcp_socket,tcp_acceptor,pipe_socket,pipe_acceptor,stream_socket,stream_acceptor,tls_stream}.hpp`, `<polycpp checkout>/include/polycpp/tls/tls.hpp`, and top-level `buffer`, `stream`, `events`, `timers`, `url`, `crypto`, `fs`, and `path` headers
 - polycpp capability snapshot: `75bc07dfca6ac0aaca07c8748476246e8c18df74` from `git -C <polycpp checkout> rev-parse HEAD` on 2026-05-04
 - transport/listener capability review: base polycpp currently exposes `polycpp::io::TcpSocket`, `TcpAcceptor`, `PipeSocket`, `PipeAcceptor`, `StreamSocket`, `StreamAcceptor`, `polycpp::net::Server`/`createServer` including TCP, Unix/IPC path, and adopted-handle listen modes, `polycpp::io::TlsStream`, `polycpp::tls::TLSSocket`, and `polycpp::tls::Server`/`createServer`; `forwarded` does not own a listener or transport lifecycle, so these are rejected for v0 after inspection
-- polycpp core types/functions selected: `polycpp::TypeError` for the missing remote-address adapter error and `polycpp::http::Headers` through the public `HeaderMap` alias for request header lookup; no base networking, stream, Buffer, URL, timer, crypto, filesystem, or HTTP server primitives are needed for the implemented pure parser
-- polycpp core types/functions rejected: `polycpp::http::IncomingMessage` is relevant to the upstream request boundary but is not used in the current implementation; live request-object integration remains deferred behind the explicit `RequestInfo` adapter
-- public polycpp interop review: the supported API returns `std::vector<std::string>` and accepts text values; request header storage uses `polycpp::http::Headers`, and a future live-request adapter should prefer `polycpp::http::IncomingMessage`
+- polycpp core types/functions selected: `polycpp::TypeError` for the missing remote-address adapter error, `polycpp::http::Headers` through the public `HeaderMap` alias for request header lookup, and `polycpp::http::IncomingMessage` for live request integration; no stream, Buffer, URL, timer, crypto, filesystem, or network target is selected directly by the parser
+- polycpp core types/functions rejected: no other base HTTP request type is needed for v0
+- public polycpp interop review: the supported API returns `std::vector<std::string>` and accepts text values; request header storage uses `polycpp::http::Headers`, and callers with a live HTTP request can use `forwarded(const polycpp::http::IncomingMessage&)`
 - string policy: `std::string`/`std::string_view` are selected because the upstream contract is byte-oriented ASCII delimiter parsing and does not depend on JavaScript UTF-16 code-unit semantics beyond comma and space scanning
 - JsonValue/Object/Array policy: no public dynamic object or diagnostic shape is exposed; `polycpp::JsonValue`, `JsonObject`, and `JsonArray` are not needed
 - Date/time interop policy: not applicable because upstream has no date or timeout surface
@@ -129,9 +129,9 @@ Likely important implementation files:
 - toJSON/stringify policy: not applicable because no public type has upstream `toJSON()` behavior
 - companion libs inspected for reusable APIs: `vary` showed the preferred `polycpp::http::Headers` boundary for header mutation; `cors` showed pure result plus HTTP adapter layering; `content-type` showed parser/serializer helper shape; `qs` showed typed options and explicit Node-surface review; `express` showed API-rich companion dependency and request/response conventions
 - companion libs selected for reuse: none, because upstream `forwarded` has no runtime npm dependencies and the implemented parser is package-specific
-- companion libs rejected or deferred: `vary`, `cors`, `content-type`, `qs`, and `express` do not provide reusable `X-Forwarded-For` parsing; direct `polycpp::http::IncomingMessage` integration is deferred as a future adapter
+- companion libs rejected or deferred: `vary`, `cors`, `content-type`, `qs`, and `express` do not provide reusable `X-Forwarded-For` parsing; the live `polycpp::http::IncomingMessage` overload uses base polycpp directly
 - new local abstractions introduced: `RequestInfo` and `AddressList`; `HeaderMap` is now an alias to `polycpp::http::Headers`, not a local container
-- reuse risks or integration gaps: direct `polycpp::http::IncomingMessage` integration remains deferred; callers should populate `RequestInfo::headers` with the shared `polycpp::http::Headers` API
+- reuse risks or integration gaps: duck-typed Node request objects remain deferred; callers can use either `RequestInfo` with the shared `polycpp::http::Headers` API or a live `polycpp::http::IncomingMessage`
 
 ## Node parity surface audit
 
@@ -143,7 +143,7 @@ Likely important implementation files:
 - stream APIs: none; upstream HTTP response stream handling appears only in tests
 - Buffer and binary APIs: none
 - URL, timer, process, and filesystem APIs: none
-- crypto, compression, TLS, network, and HTTP APIs: upstream runtime reads HTTP request-shaped fields but performs no network I/O; the current C++ adapter uses explicit values, and live `polycpp::http` request integration is deferred
+- crypto, compression, TLS, network, and HTTP APIs: upstream runtime reads HTTP request-shaped fields but performs no network I/O; the C++ port supports explicit values and live `polycpp::http::IncomingMessage` request objects
 - unsupported Node-specific APIs and audit reason: CommonJS packaging and arbitrary duck-typed `req.headers`, `req.socket`, and `req.connection` shapes are not meaningful as direct C++ APIs; exact JavaScript property-access failures are deferred in favor of typed adapter validation
 
 ## External SDK and native driver strategy
@@ -189,26 +189,25 @@ Likely important implementation files:
 - `forwarded(remote_address, x_forwarded_for)` for pure address-list construction.
 - `RequestInfo` with headers, socket remote address, and connection remote address fields.
 - `forwarded(RequestInfo)` adapter with case-insensitive header lookup and socket-over-connection precedence.
+- `forwarded(polycpp::http::IncomingMessage)` adapter with live header lookup and socket remote-address extraction.
 - Upstream compatibility tests for required request data, blank entries, spaces, and address ordering.
 
 ## Features to defer
 
 - Duck-typed Node.js `IncomingMessage` integration.
-- Live `polycpp::http` request integration until a stable request type boundary is chosen.
 - Upstream benchmark parity with `benchmark/index.js`.
 - Exact JavaScript runtime behavior for malformed nested objects such as a missing `connection` property.
 
 ## Non-parity extension candidates
 
-- `polycpp::http::IncomingMessage` adapter for callers already using live base polycpp HTTP request objects; this is an ecosystem integration candidate rather than upstream parity work.
 - Optional helper for trust-policy evaluation is not an upstream `forwarded` feature and should remain outside this port unless explicitly accepted as a C++ extension.
 
 ## v0 scope
 
 - port version: 0.1.0
 - versioning note: port version is independent from upstream versioning
-- supported APIs: `HeaderMap` (`polycpp::http::Headers` alias), `RequestInfo`, `AddressList`, `parse_header`, `forwarded(remote_address, header)`, `forwarded(RequestInfo)`
-- unsupported APIs: duck-typed Node request objects, live HTTP server/request wrappers, benchmark harness, exact JavaScript property-access failure modes
+- supported APIs: `HeaderMap` (`polycpp::http::Headers` alias), `RequestInfo`, `AddressList`, `parse_header`, `forwarded(remote_address, header)`, `forwarded(RequestInfo)`, `forwarded(polycpp::http::IncomingMessage)`
+- unsupported APIs: duck-typed Node request objects, benchmark harness, exact JavaScript property-access failure modes
 - dependency plan: no runtime dependency repos are needed; implement parser and request adapter directly in this repo
-- polycpp modules to use: base `polycpp` target for `polycpp::TypeError` and `polycpp::http::Headers`; no stream, Buffer, URL, timer, crypto, filesystem, or network target is selected for current v0 behavior
-- missing polycpp primitives: none required for v0; future HTTP integration can reuse existing `polycpp::http` types
+- polycpp modules to use: base `polycpp` target for `polycpp::TypeError`, `polycpp::http::Headers`, and `polycpp::http::IncomingMessage`; no stream, Buffer, URL, timer, crypto, filesystem, or network target is selected directly by current v0 behavior
+- missing polycpp primitives: none required for v0; live HTTP integration uses existing `polycpp::http` types

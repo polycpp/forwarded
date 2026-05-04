@@ -3,7 +3,6 @@
 ## Deferred Features
 
 - Duck-typed Node.js `IncomingMessage` integration is deferred; use `RequestInfo` or pure overloads instead.
-- Live `polycpp::http` request integration is deferred until a stable shared request adapter is chosen.
 - Upstream benchmark harness parity is deferred.
 - Exact JavaScript property-access failure behavior for malformed nested request objects is deferred.
 
@@ -12,6 +11,7 @@
 - `forwarded(req)` becomes `forwarded(const RequestInfo&)`, making request data explicit and typed.
 - Header lookup in `RequestInfo::headers` is case-insensitive so C++ callers do not need to pre-normalize header names to lowercase.
 - Missing remote address in `RequestInfo` throws `polycpp::TypeError`; missing request objects are not representable because the C++ API uses references.
+- Missing socket or remote address in the live `polycpp::http::IncomingMessage` overload returns an empty first address instead of throwing.
 
 ## Unsupported Runtime-Specific Features
 

@@ -63,6 +63,15 @@ AddressList forwarded(std::string_view remote_address, std::string_view x_forwar
  */
 AddressList forwarded(const RequestInfo& request);
 
+/**
+ * @brief Adapt a live polycpp HTTP incoming request.
+ *
+ * Uses `request.headers()` for `X-Forwarded-For` and `request.socket()` for the
+ * remote address. If no socket or remote address is available, the first
+ * returned address is an empty string.
+ */
+AddressList forwarded(const polycpp::http::IncomingMessage& request);
+
 }  // namespace polycpp::forwarded
 
 #include <polycpp/forwarded/detail/aggregator.hpp>

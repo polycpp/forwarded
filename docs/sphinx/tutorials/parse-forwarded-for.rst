@@ -33,3 +33,13 @@ Use ``RequestInfo`` when porting upstream ``forwarded(req)`` call sites:
 ``socket_remote_address`` wins over ``connection_remote_address`` because
 upstream version 0.2.0 changed to prefer ``req.socket`` over deprecated
 ``req.connection``.
+
+Use the live polycpp HTTP overload inside a server handler:
+
+.. code-block:: cpp
+
+   auto server = polycpp::http::createServer(ctx,
+       [](polycpp::http::IncomingMessage req, polycpp::http::ServerResponse res) {
+           auto addresses = polycpp::forwarded::forwarded(req);
+           res.end(addresses.empty() ? "" : addresses.front());
+       });

@@ -99,3 +99,18 @@ TEST(forwarded_request, requires_remote_address) {
 
     EXPECT_THROW(polycpp::forwarded::forwarded(request), polycpp::TypeError);
 }
+
+TEST(forwarded_http_request, uses_incoming_message_headers) {
+    polycpp::http::IncomingMessage request;
+    request.headers().set("X-Forwarded-For", "10.0.0.2, 10.0.0.1");
+
+    expect_addresses(
+        polycpp::forwarded::forwarded(request),
+        {"", "10.0.0.1", "10.0.0.2"});
+}
+
+TEST(forwarded_http_request, returns_empty_remote_address_when_socket_is_absent) {
+    polycpp::http::IncomingMessage request;
+
+    expect_addresses(polycpp::forwarded::forwarded(request), {""});
+}

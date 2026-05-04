@@ -24,6 +24,16 @@ inline std::string_view remote_address(const RequestInfo& request) {
     throw polycpp::TypeError("request remote address is required");
 }
 
+inline std::string remote_address(const polycpp::http::IncomingMessage& request) {
+    if (const auto socket = request.socket()) {
+        return socket->remoteAddress().value_or("");
+    }
+    if (const auto connection = request.connection()) {
+        return connection->remoteAddress().value_or("");
+    }
+    return "";
+}
+
 } // namespace polycpp::forwarded::detail
 
 namespace polycpp::forwarded {
@@ -64,6 +74,12 @@ inline AddressList forwarded(std::string_view remote_address, std::string_view x
 
 inline AddressList forwarded(const RequestInfo& request) {
     return forwarded(detail::remote_address(request), detail::forwarded_header_value(request));
+}
+
+inline AddressList forwarded(const polycpp::http::IncomingMessage& request) {
+    return forwarded(
+        detail::remote_address(request),
+        request.headers().get("x-forwarded-for").value_or(""));
 }
 
 } // namespace polycpp::forwarded

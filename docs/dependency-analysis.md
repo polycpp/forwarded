@@ -106,7 +106,7 @@ For every future dependency, also choose a license strategy before coding:
 - streams: none in runtime API
 - Buffer and binary data: none
 - URL/timer/process/filesystem APIs: none
-- crypto/compression/TLS/network/HTTP APIs: no runtime Node built-ins; request-like HTTP field reads are adapted through `RequestInfo`
+- crypto/compression/TLS/network/HTTP APIs: no runtime Node built-ins; request-like HTTP field reads are adapted through `RequestInfo` and a live `polycpp::http::IncomingMessage` overload
 
 ### JavaScript API usage
 
@@ -117,7 +117,7 @@ For every future dependency, also choose a license strategy before coding:
 ### Framework object boundary usage
 
 - analyzer-reported framework object accesses under libgen schema 4: `req.headers.x-forwarded-for read` (1), `req.socket read` (1), `req.socket.remoteAddress read` (1), `req.connection.remoteAddress read` (1)
-- manual review decision: upstream reads request-like object fields; expose pure `parse_header(...)` and `forwarded(remote_address, header)` helpers plus an explicit `RequestInfo` adapter; do not require C++ callers to provide dynamic `req.headers` or nested `socket`/`connection` objects
+- manual review decision: upstream reads request-like object fields; expose pure `parse_header(...)` and `forwarded(remote_address, header)` helpers, an explicit `RequestInfo` adapter, and a live `polycpp::http::IncomingMessage` overload; do not require C++ callers to provide dynamic `req.headers` or nested `socket`/`connection` objects
 - libgen feedback incorporated: schema 4 now detects framework object property reads that schema 3 missed
 
 ## Porting decisions
@@ -125,6 +125,7 @@ For every future dependency, also choose a license strategy before coding:
 - Implement runtime behavior directly in C++ because there are no runtime dependencies and no Node APIs required for the core parser.
 - Preserve the pure header parsing behavior and return order.
 - Adapt `forwarded(req)` to `forwarded(RequestInfo)` because C++ should not rely on duck-typed request objects.
+- Add `forwarded(polycpp::http::IncomingMessage)` for callers already inside a polycpp HTTP handler; missing socket or remote address maps to an empty first address.
 - Provide `forwarded(remote_address, header)` for callers that already have normalized request data.
 - Preserve `req.socket` precedence over `req.connection` through `RequestInfo::socket_remote_address` before `RequestInfo::connection_remote_address`.
 - Throw `polycpp::TypeError` when `forwarded(RequestInfo)` cannot determine a remote address.

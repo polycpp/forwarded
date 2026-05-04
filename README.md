@@ -20,12 +20,12 @@ Implemented:
 - `parse_header` for pure `X-Forwarded-For` parsing.
 - Pure address construction with `forwarded(remote_address, header)`.
 - Explicit `RequestInfo` adapter for request-like data.
+- Live `polycpp::http::IncomingMessage` adapter for HTTP server handlers.
 - Compatibility behavior for blank entries, space trimming, and socket precedence.
 
 Deferred:
 
 - Duck-typed Node.js `IncomingMessage` integration.
-- Live `polycpp::http` request integration.
 - Upstream benchmark harness parity.
 
 Known divergences:

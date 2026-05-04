@@ -23,3 +23,13 @@ adaptation; Node.js normally exposes incoming header names in lowercase.
 
 If both remote address fields are missing, ``forwarded(request)`` throws
 ``polycpp::TypeError``.
+
+When the caller already has a live polycpp HTTP request, pass it directly:
+
+.. code-block:: cpp
+
+   auto addresses = polycpp::forwarded::forwarded(incoming_message);
+
+The live overload reads ``incoming_message.headers()`` and
+``incoming_message.socket()``. If the request has no socket or the socket has
+no remote address, the first returned address is an empty string.

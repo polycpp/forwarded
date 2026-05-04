@@ -12,11 +12,14 @@
 - `forwarded(RequestInfo)` falls back to connection remote address.
 - `forwarded(RequestInfo)` prefers socket over connection when both are present.
 - `forwarded(RequestInfo)` throws `polycpp::TypeError` when no remote address is available.
+- `forwarded(polycpp::http::IncomingMessage)` reads live request headers.
+- `forwarded(polycpp::http::IncomingMessage)` returns an empty first address when no socket or remote address is present.
 
 ## Integration tests
 
 - Build a `RequestInfo` with `X-Forwarded-For` and socket remote address and verify the same address order documented upstream.
 - Build a `RequestInfo` with lowercase `x-forwarded-for` and with canonical `X-Forwarded-For` to verify case-insensitive header lookup.
+- Build a `polycpp::http::IncomingMessage` with `X-Forwarded-For` and verify the live request overload preserves proxy address order.
 - Compile and run example programs for pure parsing and request-adapter usage.
 
 ## Compatibility tests adapted from upstream
@@ -29,6 +32,7 @@
   - `test/test.js` `should skip blank entries` -> `parse_header.skips_blank_entries`
   - `test/test.js` `should trim leading OWS` -> `parse_header.trims_leading_and_trailing_spaces`
   - `test/test.js` socket-address cluster -> `forwarded_request.prefers_socket_remote_address` and `forwarded_request.falls_back_to_connection_remote_address`
+  - live polycpp request adapter coverage -> `forwarded_http_request.uses_incoming_message_headers` and `forwarded_http_request.returns_empty_remote_address_when_socket_is_absent`
 - omitted upstream cases:
   - upstream HTTP server loopback fixture is not ported directly because `forwarded` does not export a server/listener API; `RequestInfo` integration tests cover the same observable address list.
   - upstream `deep-equal`/JSON response plumbing is JavaScript test harness behavior and is not meaningful for the typed C++ API.
@@ -36,6 +40,7 @@
 ## Security and fail-closed tests
 
 - Missing remote address in `RequestInfo` must throw `polycpp::TypeError` instead of returning a misleading empty socket entry.
+- Missing socket or remote address in `polycpp::http::IncomingMessage` must return an empty first address, matching the accepted C++ fallback policy for live request handles.
 - Blank header entries must be skipped so malformed comma lists do not create empty addresses.
 - Space-only trimming must stay explicit; tabs are preserved so the port does not silently normalize more than upstream.
 - No trust-proxy policy is implemented; callers must treat parsed `X-Forwarded-For` values as untrusted unless they validate the proxy chain separately.
@@ -60,6 +65,7 @@ Not applicable because `forwarded` is a synchronous header parser, not a databas
 - Blank entries must be skipped.
 - ASCII space trimming must match upstream; tabs must not be silently converted to spaces.
 - Socket remote address must take precedence over connection remote address.
+- Live `polycpp::http::IncomingMessage` overload must use `headers()` and preserve the accepted empty-remote fallback.
 - Public README examples must compile and match tests.
 - Docs build must pass before public release.
 
@@ -86,3 +92,9 @@ Commands run during the 2026-05-04 libgen catch-up:
 - After resolving audit finding AF-2026-05-04-A, `python3 docs/build.py` -> Doxygen/Sphinx build passed with warnings treated as errors.
 - After resolving audit finding AF-2026-05-04-A, `python3 /data/work/libgen/scripts/check-port-readiness.py --strict /data/work/lib/forwarded` -> passed.
 - After resolving audit finding AF-2026-05-04-A, `python3 /data/work/libgen/scripts/check-port-validation.py --run-docs-build /data/work/lib/forwarded` -> post-implementation validation passed, including the docs build.
+- After adding the live `polycpp::http::IncomingMessage` overload, `cmake --build build -j$(nproc)` -> rebuilt `polycpp_forwarded`, `polycpp_forwarded_test_smoke`, and both example targets.
+- After adding the live `polycpp::http::IncomingMessage` overload, `ctest --test-dir build --output-on-failure` -> 14/14 tests passed, including `forwarded_http_request.uses_incoming_message_headers` and `forwarded_http_request.returns_empty_remote_address_when_socket_is_absent`.
+- After adding the live `polycpp::http::IncomingMessage` overload, `./build/examples/request_adapter` -> printed `127.0.0.1`, `10.0.0.1`, `10.0.0.2`.
+- After adding the live `polycpp::http::IncomingMessage` overload, `python3 docs/build.py` -> Doxygen/Sphinx build passed with warnings treated as errors.
+- After adding the live `polycpp::http::IncomingMessage` overload, `python3 /data/work/libgen/scripts/check-port-readiness.py --strict /data/work/lib/forwarded` -> passed.
+- After adding the live `polycpp::http::IncomingMessage` overload, `python3 /data/work/libgen/scripts/check-port-validation.py --run-docs-build /data/work/lib/forwarded` -> post-implementation validation passed, including the docs build.

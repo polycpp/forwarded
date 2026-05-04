@@ -19,3 +19,5 @@ Functions
 .. doxygenfunction:: polycpp::forwarded::forwarded(std::string_view, std::string_view)
 
 .. doxygenfunction:: polycpp::forwarded::forwarded(const polycpp::forwarded::RequestInfo&)
+
+.. doxygenfunction:: polycpp::forwarded::forwarded(const polycpp::http::IncomingMessage&)
