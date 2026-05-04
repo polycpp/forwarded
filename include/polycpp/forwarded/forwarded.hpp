@@ -11,21 +11,21 @@
  * @since 0.1.0
  */
 
-#include <map>
 #include <optional>
 #include <string>
 #include <string_view>
 #include <vector>
 
 #include <polycpp/core/error.hpp>
+#include <polycpp/http.hpp>
 
 namespace polycpp::forwarded {
 
 /** @brief Ordered list of socket and forwarded addresses. */
 using AddressList = std::vector<std::string>;
 
-/** @brief HTTP header map used by the request adapter. */
-using HeaderMap = std::map<std::string, std::string>;
+/** @brief HTTP headers used by the request adapter. */
+using HeaderMap = polycpp::http::Headers;
 
 /**
  * @brief Explicit C++ boundary for the upstream Node.js request object.

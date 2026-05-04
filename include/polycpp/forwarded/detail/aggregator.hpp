@@ -14,30 +14,8 @@
 
 namespace polycpp::forwarded::detail {
 
-inline char lower_ascii(char ch) noexcept {
-    if (ch >= 'A' && ch <= 'Z') return static_cast<char>(ch - 'A' + 'a');
-    return ch;
-}
-
-inline bool equals_ignore_ascii_case(std::string_view left, std::string_view right) noexcept {
-    if (left.size() != right.size()) return false;
-    for (std::size_t i = 0; i < left.size(); ++i) {
-        if (lower_ascii(left[i]) != lower_ascii(right[i])) return false;
-    }
-    return true;
-}
-
-inline HeaderMap::const_iterator find_header(const HeaderMap& headers, std::string_view name) {
-    for (auto it = headers.begin(); it != headers.end(); ++it) {
-        if (equals_ignore_ascii_case(it->first, name)) return it;
-    }
-    return headers.end();
-}
-
-inline std::string_view forwarded_header_value(const RequestInfo& request) {
-    const auto found = find_header(request.headers, "x-forwarded-for");
-    if (found == request.headers.end()) return {};
-    return found->second;
+inline std::string forwarded_header_value(const RequestInfo& request) {
+    return request.headers.get("x-forwarded-for").value_or("");
 }
 
 inline std::string_view remote_address(const RequestInfo& request) {

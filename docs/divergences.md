@@ -10,7 +10,6 @@
 ## Deliberate Behavior Changes
 
 - `forwarded(req)` becomes `forwarded(const RequestInfo&)`, making request data explicit and typed.
-- `RequestInfo::headers` uses the current local `HeaderMap` adapter instead of `polycpp::http::Headers`; this keeps the existing v0 API stable during catch-up but is not the preferred long-term HTTP header boundary.
 - Header lookup in `RequestInfo::headers` is case-insensitive so C++ callers do not need to pre-normalize header names to lowercase.
 - Missing remote address in `RequestInfo` throws `polycpp::TypeError`; missing request objects are not representable because the C++ API uses references.
 
@@ -23,4 +22,4 @@
 
 | ID | Severity | Location | Description | Recommended classification |
 |---|---|---|---|---|
-| AF-2026-05-04-A | low | `include/polycpp/forwarded/forwarded.hpp:28` | The current public adapter defines `HeaderMap` as `std::map<std::string, std::string>` even though current base polycpp provides `polycpp::http::Headers` for HTTP header semantics. | refactor follow-up: add or migrate to a `polycpp::http::Headers` adapter in a separate change while preserving the existing `RequestInfo` API or documenting a source break |
+| AF-2026-05-04-A | low | `include/polycpp/forwarded/forwarded.hpp:28` | The catch-up audit found that public `HeaderMap` was a local `std::map<std::string, std::string>` even though current base polycpp provides `polycpp::http::Headers` for HTTP header semantics. | resolved 2026-05-04 - `HeaderMap` now aliases `polycpp::http::Headers`; pinned by `forwarded_request.uses_polycpp_http_headers_for_request_info` |

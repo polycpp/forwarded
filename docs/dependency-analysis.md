@@ -112,7 +112,7 @@ For every future dependency, also choose a license strategy before coding:
 
 - analyzer-detected calls: `Array.prototype.push` (2), `String.prototype.substring` (2), `String.prototype.charCodeAt` (1)
 - manually observed operations: backwards comma-list parsing, space-only trimming, skipped blank entries, and request property reads through `req.headers`, `req.socket.remoteAddress`, and `req.connection.remoteAddress`
-- C++ replacements: `std::string_view`, `std::vector<std::string>`, `HeaderMap`, explicit socket/connection fields, and manual comma-list parsing
+- C++ replacements: `std::string_view`, `std::vector<std::string>`, `polycpp::http::Headers` through the public `HeaderMap` alias, explicit socket/connection fields, and manual comma-list parsing
 
 ### Framework object boundary usage
 

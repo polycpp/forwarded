@@ -20,7 +20,7 @@ Program
 
        polycpp::forwarded::RequestInfo request;
        request.socket_remote_address = "127.0.0.1";
-       request.headers["X-Forwarded-For"] = "10.0.0.2, 10.0.0.1";
+       request.headers.set("X-Forwarded-For", "10.0.0.2, 10.0.0.1");
 
        auto adapted = polycpp::forwarded::forwarded(request);
 

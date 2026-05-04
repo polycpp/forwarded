@@ -53,7 +53,7 @@ cd build && ctest --output-on-failure
 
 polycpp::forwarded::RequestInfo req;
 req.socket_remote_address = "127.0.0.1";
-req.headers["X-Forwarded-For"] = "10.0.0.2, 10.0.0.1";
+req.headers.set("X-Forwarded-For", "10.0.0.2, 10.0.0.1");
 
 polycpp::forwarded::AddressList addresses = polycpp::forwarded::forwarded(req);
 // addresses == {"127.0.0.1", "10.0.0.1", "10.0.0.2"}

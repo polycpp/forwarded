@@ -80,3 +80,9 @@ Commands run during the 2026-05-04 libgen catch-up:
 - `./build/examples/request_adapter` -> printed `127.0.0.1`, `10.0.0.1`, `10.0.0.2`.
 - `python3 docs/build.py` -> Doxygen/Sphinx build passed with warnings treated as errors.
 - `python3 /data/work/libgen/scripts/check-port-validation.py --run-docs-build /data/work/lib/forwarded` -> post-implementation validation passed, including the docs build.
+- After resolving audit finding AF-2026-05-04-A, `cmake --build build -j$(nproc)` -> rebuilt `polycpp_forwarded`, `polycpp_forwarded_test_smoke`, and both example targets with `HeaderMap` as `polycpp::http::Headers`.
+- After resolving audit finding AF-2026-05-04-A, `ctest --test-dir build --output-on-failure` -> 12/12 tests passed, including `forwarded_request.uses_polycpp_http_headers_for_request_info`.
+- After resolving audit finding AF-2026-05-04-A, `./build/examples/request_adapter` -> printed `127.0.0.1`, `10.0.0.1`, `10.0.0.2`.
+- After resolving audit finding AF-2026-05-04-A, `python3 docs/build.py` -> Doxygen/Sphinx build passed with warnings treated as errors.
+- After resolving audit finding AF-2026-05-04-A, `python3 /data/work/libgen/scripts/check-port-readiness.py --strict /data/work/lib/forwarded` -> passed.
+- After resolving audit finding AF-2026-05-04-A, `python3 /data/work/libgen/scripts/check-port-validation.py --run-docs-build /data/work/lib/forwarded` -> post-implementation validation passed, including the docs build.
