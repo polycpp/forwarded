@@ -3,7 +3,7 @@
 /**
  * @file detail/aggregator.hpp
  * @brief Inline implementation include point for polycpp/forwarded.
- * @since 0.1.0
+ * @since 1.0.0
  */
 
 #include <polycpp/forwarded/forwarded.hpp>

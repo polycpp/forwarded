@@ -6,7 +6,7 @@ C++ companion port of [forwarded](https://www.npmjs.com/package/forwarded) for [
 
 ## Status
 
-Port version: `0.1.0`
+Port version: `1.0.0`
 
 Initial port based on upstream version: `0.2.0`
 

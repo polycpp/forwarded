@@ -10,7 +10,7 @@
 | live `polycpp::http::IncomingMessage` request | `polycpp::forwarded::forwarded(const polycpp::http::IncomingMessage&)` | compatibility layer | Reads `headers()` and `socket()` from a live polycpp HTTP request; missing socket or remote address maps to an empty first address. |
 | `[socketAddr].concat(proxyAddrs)` | `forwarded(std::string_view, std::string_view)` | direct | Pure overload returns socket address first, then parsed proxy addresses. |
 | missing `req` JavaScript `TypeError` | non-null C++ references plus `polycpp::TypeError` for missing remote address | adapted | C++ avoids nullable request APIs and validates adapter content. |
-| upstream benchmark entry point | no public C++ symbol | deferred | Benchmark parity is outside v0 scope. |
+| upstream benchmark entry point | no public C++ symbol | deferred | Benchmark parity is outside the 1.0.0 scope. |
 
 ## TypeScript Declaration Review
 
@@ -24,7 +24,7 @@
 - Upstream fields or methods read: `req.headers['x-forwarded-for']`, `req.socket.remoteAddress`, and `req.connection.remoteAddress`.
 - Upstream fields or methods written: none.
 - C++ adapter boundary: expose pure parser/address helpers, `RequestInfo` for explicit request data, and a live `polycpp::http::IncomingMessage` overload. Do not require duck-typed request objects. `HeaderMap` is an alias for `polycpp::http::Headers`, so header lookup and validation use the shared HTTP header container.
-- Partial mutation risk on validation failure: none, because all v0 APIs return values and do not mutate caller-owned request state.
+- Partial mutation risk on validation failure: none, because all 1.0.0 APIs return values and do not mutate caller-owned request state.
 
 ## Node parity surface review
 

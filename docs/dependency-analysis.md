@@ -90,7 +90,7 @@ For every future dependency, also choose a license strategy before coding:
 - security hints consumed: analyzer reported `securitySensitive: false` and no matched terms; manual review treats `X-Forwarded-For` as user-controlled parser input but not an authentication decision
 - security-sensitive package: no; trust-proxy policy is deliberately outside upstream `forwarded`
 - polycpp capability snapshot consumed: `75bc07dfca6ac0aaca07c8748476246e8c18df74` from `<polycpp checkout>` on 2026-05-04
-- transport/listener capability hints consumed: analyzer emitted no transport hints; manual inspection found base TCP, Unix/IPC path, adopted-handle, HTTP/HTTPS, TLS, and generic stream listener primitives, all rejected for v0 because `forwarded` exports no listener surface
+- transport/listener capability hints consumed: analyzer emitted no transport hints; manual inspection found base TCP, Unix/IPC path, adopted-handle, HTTP/HTTPS, TLS, and generic stream listener primitives, all rejected for 1.0.0 because `forwarded` exports no listener surface
 
 ### Node.js API usage
 

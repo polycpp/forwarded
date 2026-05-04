@@ -98,3 +98,8 @@ Commands run during the 2026-05-04 libgen catch-up:
 - After adding the live `polycpp::http::IncomingMessage` overload, `python3 docs/build.py` -> Doxygen/Sphinx build passed with warnings treated as errors.
 - After adding the live `polycpp::http::IncomingMessage` overload, `python3 /data/work/libgen/scripts/check-port-readiness.py --strict /data/work/lib/forwarded` -> passed.
 - After adding the live `polycpp::http::IncomingMessage` overload, `python3 /data/work/libgen/scripts/check-port-validation.py --run-docs-build /data/work/lib/forwarded` -> post-implementation validation passed, including the docs build.
+- After setting the release version to 1.0.0 and making the GitHub repository public, `cmake --build build -j$(nproc)` -> CMake reconfigured and rebuilt `polycpp_forwarded`, `polycpp_forwarded_test_smoke`, and both example targets.
+- After setting the release version to 1.0.0 and making the GitHub repository public, `ctest --test-dir build --output-on-failure` -> 14/14 tests passed.
+- After setting the release version to 1.0.0 and making the GitHub repository public, `python3 docs/build.py` -> Doxygen/Sphinx build passed with warnings treated as errors.
+- After setting the release version to 1.0.0 and making the GitHub repository public, `gh repo view polycpp/forwarded --json visibility,url` -> reported `visibility` as `PUBLIC` for `https://github.com/polycpp/forwarded`.
+- After setting the release version to 1.0.0 and making the GitHub repository public, `python3 /data/work/libgen/scripts/check-port-validation.py --run-docs-build /data/work/lib/forwarded` -> post-implementation validation passed, including the docs build.

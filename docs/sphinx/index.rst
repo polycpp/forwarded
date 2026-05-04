@@ -37,7 +37,7 @@ object to explicit C++ request data.
    .. grid-item-card:: Compatibility tests
       :margin: 1
 
-      The v0 tests are adapted from upstream ``test/test.js``.
+      The 1.0.0 tests are adapted from upstream ``test/test.js``.
 
 Getting started
 ---------------

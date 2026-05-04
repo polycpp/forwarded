@@ -12,9 +12,9 @@ Legend:
 
 - [x] target repo scaffolded
 - [x] GitHub repo created under `polycpp`
-- [x] GitHub repo visibility verified private
+- [x] GitHub repo visibility verified public
 - GitHub repo URL: https://github.com/polycpp/forwarded
-- GitHub repo private: yes
+- GitHub repo private: no
 - [x] baseline readiness passed
 - [x] upstream repo cloned or updated locally
 - [x] upstream revision recorded in `docs/research.md`
@@ -69,7 +69,7 @@ Legend:
 
 ## Scope
 
-- [x] `v0` scope written in `docs/research.md`
+- [x] `1.0.0` scope written in `docs/research.md`
 - [x] deferred features listed in `docs/divergences.md`
 - [x] omitted features classified separately from deferred work
 - [x] `polycpp` module dependencies listed
@@ -80,7 +80,7 @@ Legend:
 
 ## API Mapping
 
-- [x] major public `v0` APIs mapped
+- [x] major public `1.0.0` APIs mapped
 - [x] direct vs adapted vs deferred vs omitted status recorded
 - [x] dynamic typing adaptations recorded
 - [x] framework object boundary reviewed
@@ -126,10 +126,10 @@ Legend:
 
 ## Public Release
 
-- [ ] production-grade quality confirmed
-- [ ] public documentation ready
+- [x] production-grade quality confirmed
+- [x] public documentation ready
 - [x] generated docs placeholder pages replaced with real public documentation
 - [x] public docs do not contain local absolute paths
 - [x] `python3 docs/build.py` passes
 - [x] third-party license notices complete
-- [ ] GitHub repo visibility changed to public
+- [x] GitHub repo visibility changed to public

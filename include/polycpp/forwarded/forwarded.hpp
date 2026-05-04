@@ -8,7 +8,7 @@
  * request-object API is adapted to explicit C++ request data.
  *
  * @see https://www.npmjs.com/package/forwarded
- * @since 0.1.0
+ * @since 1.0.0
  */
 
 #include <optional>

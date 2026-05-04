@@ -16,7 +16,7 @@
 ## Unsupported Runtime-Specific Features
 
 - Dynamic Node request objects with arbitrary `headers`, `socket`, and `connection` property shapes are not supported.
-- Node.js HTTP server integration is not part of v0.
+- Node.js HTTP server integration is not part of 1.0.0.
 
 ## Audit findings (libgen catch-up)
 
