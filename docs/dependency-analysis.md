@@ -4,11 +4,13 @@
 
 - package: forwarded
 - package version: 0.2.0
-- package root: `/data/work/lib/forwarded/.tmp/upstream/forwarded`
+- package root: `<target-dir>/.tmp/npm-package`
 - analyzer json: `.tmp/dependency-analysis.json`
+- published npm artifact path: `<target-dir>/.tmp/npm-package`
+- published npm artifact analyzed: yes, fetched from npm as `forwarded@0.2.0` on 2026-05-04
 - include dev dependencies: no
 - dependency source install used: yes
-- companion root checked: `/data/work/lib`
+- companion root checked: `<companion libs root>`
 
 ## Package entry metadata
 
@@ -19,6 +21,9 @@
 - bin: none
 - missing declared entries in repo clone: none
 - TypeScript source files detected: 0
+- TypeScript declarations reviewed: none shipped in the repo clone or published npm artifact
+- declaration-source decision: no TypeScript declaration source exists for upstream `forwarded@0.2.0`; public API evidence comes from `index.js`, `README.md`, and `test/test.js`
+- source-vs-published artifact decision: published npm artifact is the runtime source of truth for dependency and entry-point analysis; its runtime files match the repo clone's `index.js`, `README.md`, `HISTORY.md`, `LICENSE`, and `package.json` shape
 
 ## Direct dependencies
 
@@ -74,13 +79,34 @@ For every future dependency, also choose a license strategy before coding:
 ### Target package
 
 - entry points analyzed: `index.js`
-- source files analyzed by analyzer: `index.js`
+- source files analyzed by analyzer: `index.js` from `<target-dir>/.tmp/npm-package`
 - source files manually inspected: `index.js`, `test/test.js`, `README.md`, `HISTORY.md`
 - external imports seen from target: none in runtime implementation
+
+### Analyzer porting gates
+
+- polycpp reuse hints consumed: none emitted by analyzer; manual reuse review still inspected base HTTP/header/request, stream, Buffer, URL, timer, crypto, filesystem, network, TLS, and listener primitives
+- Node parity hints consumed: none emitted by analyzer; manual audit recorded that upstream runtime has no callbacks, promises, events, streams, Buffer, timers, filesystem, crypto, compression, TLS, network I/O, or listener API
+- security hints consumed: analyzer reported `securitySensitive: false` and no matched terms; manual review treats `X-Forwarded-For` as user-controlled parser input but not an authentication decision
+- security-sensitive package: no; trust-proxy policy is deliberately outside upstream `forwarded`
+- polycpp capability snapshot consumed: `75bc07dfca6ac0aaca07c8748476246e8c18df74` from `<polycpp checkout>` on 2026-05-04
+- transport/listener capability hints consumed: analyzer emitted no transport hints; manual inspection found base TCP, Unix/IPC path, adopted-handle, HTTP/HTTPS, TLS, and generic stream listener primitives, all rejected for v0 because `forwarded` exports no listener surface
 
 ### Node.js API usage
 
 - none detected in runtime implementation; upstream public API still expects Node request-like properties, which are represented by a C++ `RequestInfo` adapter in this port
+
+### Node parity surface usage
+
+- callbacks: none in runtime API; upstream test callbacks are harness-only
+- Promise APIs: none
+- EventEmitter APIs: none in runtime API; upstream test response events are harness-only
+- server/listener APIs: none exported; `http.createServer` appears only in upstream tests and is not ported as a public surface
+- diagnostic/tracing APIs: none
+- streams: none in runtime API
+- Buffer and binary data: none
+- URL/timer/process/filesystem APIs: none
+- crypto/compression/TLS/network/HTTP APIs: no runtime Node built-ins; request-like HTTP field reads are adapted through `RequestInfo`
 
 ### JavaScript API usage
 

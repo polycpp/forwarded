@@ -11,10 +11,29 @@
 | missing `req` JavaScript `TypeError` | non-null C++ references plus `polycpp::TypeError` for missing remote address | adapted | C++ avoids nullable request APIs and validates adapter content. |
 | upstream benchmark entry point | no public C++ symbol | deferred | Benchmark parity is outside v0 scope. |
 
+## TypeScript Declaration Review
+
+- Declaration source used: none; upstream `forwarded@0.2.0` does not ship TypeScript declarations in the repo clone or published npm artifact.
+- Public APIs, overloads, options, callbacks, streams, or literal unions found only or most clearly in declarations: none.
+- Declaration-only globals, caches, deprecated fields, or runtime-specific surfaces mapped as unsupported/not-applicable: none.
+
 ## Framework object boundary review
 
 - Upstream reads or mutates framework/request/response/context objects: yes, upstream reads a Node request-like object and does not mutate it.
 - Upstream fields or methods read: `req.headers['x-forwarded-for']`, `req.socket.remoteAddress`, and `req.connection.remoteAddress`.
 - Upstream fields or methods written: none.
-- C++ adapter boundary: expose pure parser/address helpers plus `RequestInfo` for explicit request data; do not require duck-typed request objects.
+- C++ adapter boundary: expose pure parser/address helpers plus `RequestInfo` for explicit request data; do not require duck-typed request objects. The current adapter uses local `HeaderMap`; future `polycpp::http` integration should prefer `polycpp::http::Headers`.
 - Partial mutation risk on validation failure: none, because all v0 APIs return values and do not mutate caller-owned request state.
+
+## Node parity surface review
+
+- Callback APIs: none in the public runtime API.
+- Promise APIs: none.
+- EventEmitter APIs: none; upstream test response events are test harness behavior only.
+- Server/listener APIs: none exported; TCP, Unix/IPC path, adopted native handles, HTTP/HTTPS, TLS, and generic stream listener primitives exist in base polycpp but are not selected because `forwarded` owns no listener lifecycle.
+- Diagnostic/tracing APIs: none.
+- Stream APIs: none; upstream stream use is limited to the HTTP test fixture.
+- Buffer and binary APIs: none.
+- URL, timer, process, and filesystem APIs: none.
+- Crypto, compression, TLS, network, and HTTP APIs: no runtime Node built-ins; HTTP request field reads are adapted to explicit values, and live `polycpp::http` request integration is deferred.
+- Unsupported or non-meaningful Node-specific APIs and audit reason: CommonJS packaging, arbitrary duck-typed request object shapes, and exact JavaScript property-access failure modes are not represented by the typed C++ API.

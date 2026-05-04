@@ -8,22 +8,15 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 include(FetchContent)
 
 set(POLYCPP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-set(POLYCPP_SOURCE_DIR "" CACHE PATH "Path to a local polycpp checkout")
 
-if(NOT POLYCPP_SOURCE_DIR AND EXISTS "/data/repo/polycpp/CMakeLists.txt")
-    set(POLYCPP_SOURCE_DIR "/data/repo/polycpp" CACHE PATH "Path to a local polycpp checkout" FORCE)
-endif()
-
-if(POLYCPP_SOURCE_DIR AND EXISTS "${POLYCPP_SOURCE_DIR}/CMakeLists.txt")
-    FetchContent_Declare(polycpp SOURCE_DIR "${POLYCPP_SOURCE_DIR}")
-else()
-    FetchContent_Declare(
-        polycpp
-        GIT_REPOSITORY git@github.com:enricohuang/polycpp.git
-        GIT_TAG        master
-        GIT_SHALLOW    TRUE
-    )
-endif()
+# Local validation against an in-tree polycpp checkout uses CMake's built-in
+# FETCHCONTENT_SOURCE_DIR_POLYCPP override at configure time.
+FetchContent_Declare(
+    polycpp
+    GIT_REPOSITORY git@github.com:enricohuang/polycpp.git
+    GIT_TAG        master
+    GIT_SHALLOW    TRUE
+)
 FetchContent_MakeAvailable(polycpp)
 
 add_library(polycpp_forwarded
@@ -37,7 +30,11 @@ target_include_directories(polycpp_forwarded PUBLIC
 
 add_library(polycpp::forwarded ALIAS polycpp_forwarded)
 
-option(POLYCPP_FORWARDED_BUILD_TESTS "Build tests" ON)
+set(POLYCPP_FORWARDED_BUILD_TESTS_DEFAULT OFF)
+if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
+    set(POLYCPP_FORWARDED_BUILD_TESTS_DEFAULT ON)
+endif()
+option(POLYCPP_FORWARDED_BUILD_TESTS "Build tests" ${POLYCPP_FORWARDED_BUILD_TESTS_DEFAULT})
 if(POLYCPP_FORWARDED_BUILD_TESTS)
     enable_testing()
     FetchContent_Declare(
@@ -47,10 +44,10 @@ if(POLYCPP_FORWARDED_BUILD_TESTS)
     )
     FetchContent_MakeAvailable(googletest)
 
-    add_executable(test_smoke tests/test_smoke.cpp)
-    target_link_libraries(test_smoke PRIVATE polycpp_forwarded GTest::gtest_main)
+    add_executable(polycpp_forwarded_test_smoke tests/test_smoke.cpp)
+    target_link_libraries(polycpp_forwarded_test_smoke PRIVATE polycpp::forwarded GTest::gtest_main)
     include(GoogleTest)
-    gtest_discover_tests(test_smoke)
+    gtest_discover_tests(polycpp_forwarded_test_smoke)
 endif()
 
 option(POLYCPP_FORWARDED_BUILD_EXAMPLES "Build examples" OFF)
@@ -58,9 +55,11 @@ if(POLYCPP_FORWARDED_BUILD_EXAMPLES)
     file(GLOB POLYCPP_FORWARDED_EXAMPLES CONFIGURE_DEPENDS examples/*.cpp)
     foreach(example_source IN LISTS POLYCPP_FORWARDED_EXAMPLES)
         get_filename_component(example_name "${example_source}" NAME_WE)
-        add_executable("${example_name}" "${example_source}")
-        target_link_libraries("${example_name}" PRIVATE polycpp_forwarded)
-        set_target_properties("${example_name}" PROPERTIES
+        set(example_target "polycpp_forwarded_example_${example_name}")
+        add_executable("${example_target}" "${example_source}")
+        target_link_libraries("${example_target}" PRIVATE polycpp::forwarded)
+        set_target_properties("${example_target}" PROPERTIES
+            OUTPUT_NAME "${example_name}"
             RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/examples"
         )
     endforeach()

@@ -17,6 +17,6 @@ From the repository root:
 .. code-block:: bash
 
    cmake -B build -G Ninja -DPOLYCPP_FORWARDED_BUILD_EXAMPLES=ON
-   cmake --build build --target parse_header request_adapter
+   cmake --build build --target polycpp_forwarded_example_parse_header polycpp_forwarded_example_request_adapter
    ./build/examples/parse_header
    ./build/examples/request_adapter

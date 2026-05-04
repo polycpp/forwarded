@@ -37,7 +37,7 @@ CMake to use them instead of fetching from GitHub:
 
    # Building this repo directly
    cmake -B build -G Ninja \
-       -DPOLYCPP_SOURCE_DIR=/path/to/polycpp
+       -DFETCHCONTENT_SOURCE_DIR_POLYCPP=/path/to/polycpp
 
    # Consuming this repo through FetchContent
    cmake -B build -G Ninja \
@@ -45,8 +45,7 @@ CMake to use them instead of fetching from GitHub:
        -DFETCHCONTENT_SOURCE_DIR_POLYCPP_FORWARDED=/path/to/forwarded
 
 This is the path local validation can use when testing a port beside a
-polycpp checkout - see ``tests/`` in the repo. The generated CMake also uses
-``/data/repo/polycpp`` automatically when that checkout exists.
+polycpp checkout - see ``tests/`` in the repo.
 
 Build options
 -------------
