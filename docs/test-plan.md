@@ -103,3 +103,6 @@ Commands run during the 2026-05-04 libgen catch-up:
 - After setting the release version to 1.0.0 and making the GitHub repository public, `python3 docs/build.py` -> Doxygen/Sphinx build passed with warnings treated as errors.
 - After setting the release version to 1.0.0 and making the GitHub repository public, `gh repo view polycpp/forwarded --json visibility,url` -> reported `visibility` as `PUBLIC` for `https://github.com/polycpp/forwarded`.
 - After setting the release version to 1.0.0 and making the GitHub repository public, `python3 /data/work/libgen/scripts/check-port-validation.py --run-docs-build /data/work/lib/forwarded` -> post-implementation validation passed, including the docs build.
+- After public documentation review, `python3 docs/build.py` -> Doxygen/Sphinx build passed with warnings treated as errors.
+- After public documentation review, `python3 /data/work/libgen/scripts/check-port-validation.py --run-docs-build /data/work/lib/forwarded` -> post-implementation validation passed, including the docs build.
+- After public documentation review, `cmake --build build -j$(nproc)` and `ctest --test-dir build --output-on-failure` -> rebuilt the project and passed 14/14 tests.

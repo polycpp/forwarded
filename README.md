@@ -1,8 +1,10 @@
 # polycpp-forwarded
 
-C++ companion port of [forwarded](https://www.npmjs.com/package/forwarded) for [polycpp](https://github.com/enricohuang/polycpp).
+C++ companion port of [forwarded](https://www.npmjs.com/package/forwarded) for the [polycpp](https://github.com/polycpp) project.
 
 `forwarded` parses the HTTP `X-Forwarded-For` header and returns the socket address followed by forwarded addresses in the same order as the upstream npm package.
+
+`X-Forwarded-For` is client-spoofable unless trusted infrastructure sets or overwrites it. This library parses address lists only; callers must decide which proxy entries are trusted before using returned addresses for authentication, rate limiting, audit logging, or access control.
 
 ## Status
 
@@ -31,6 +33,7 @@ Deferred:
 Known divergences:
 
 - The C++ API uses typed request data instead of dynamic `req.headers`, `req.socket`, and `req.connection` property reads.
+- `forwarded(RequestInfo)` throws `polycpp::TypeError` when both remote address fields are absent; the live `forwarded(polycpp::http::IncomingMessage)` overload returns an empty first address when no socket or connection remote address is available.
 
 ## Prerequisites
 

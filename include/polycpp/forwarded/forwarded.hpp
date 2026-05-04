@@ -7,6 +7,10 @@
  * C++ port of npm forwarded (https://github.com/jshttp/forwarded). The
  * request-object API is adapted to explicit C++ request data.
  *
+ * This library parses and orders `X-Forwarded-For` values only. Callers remain
+ * responsible for trusted proxy policy before using returned addresses for
+ * authentication, rate limiting, audit logging, or access control.
+ *
  * @see https://www.npmjs.com/package/forwarded
  * @since 1.0.0
  */
@@ -47,17 +51,22 @@ struct RequestInfo {
 /**
  * @brief Parse `X-Forwarded-For` into proxy addresses.
  *
- * Results are returned in upstream order: rightmost header entry first.
+ * Results are returned in upstream order: rightmost header entry first. No
+ * direct remote address is added.
  */
 AddressList parse_header(std::string_view header);
 
 /**
  * @brief Return remote address followed by parsed forwarded addresses.
+ *
+ * Uses the supplied remote address string exactly as the first returned entry.
  */
 AddressList forwarded(std::string_view remote_address, std::string_view x_forwarded_for = {});
 
 /**
  * @brief Adapt explicit request data to upstream `forwarded(req)` behavior.
+ *
+ * The socket remote address is preferred over the connection remote address.
  *
  * @throws polycpp::TypeError when no socket or connection remote address is present.
  */
@@ -66,9 +75,10 @@ AddressList forwarded(const RequestInfo& request);
 /**
  * @brief Adapt a live polycpp HTTP incoming request.
  *
- * Uses `request.headers()` for `X-Forwarded-For` and `request.socket()` for the
- * remote address. If no socket or remote address is available, the first
- * returned address is an empty string.
+ * Uses `request.headers()` for `X-Forwarded-For`, `request.socket()` for the
+ * remote address, and `request.connection()` when no socket handle is present.
+ * If no socket or connection remote address is available, the first returned
+ * address is an empty string.
  */
 AddressList forwarded(const polycpp::http::IncomingMessage& request);
 

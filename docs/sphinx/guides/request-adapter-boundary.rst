@@ -1,6 +1,11 @@
 Request Adapter Boundary
 ========================
 
+``forwarded`` parses address lists only. ``X-Forwarded-For`` can be supplied by
+clients unless trusted infrastructure sets or overwrites it, so callers must
+choose which proxy entries are trusted before using any returned address for
+authentication, rate limiting, audit logging, or access control.
+
 Upstream ``forwarded(req)`` reads these dynamic properties:
 
 - ``req.headers['x-forwarded-for']``
@@ -30,6 +35,8 @@ When the caller already has a live polycpp HTTP request, pass it directly:
 
    auto addresses = polycpp::forwarded::forwarded(incoming_message);
 
-The live overload reads ``incoming_message.headers()`` and
-``incoming_message.socket()``. If the request has no socket or the socket has
-no remote address, the first returned address is an empty string.
+The live overload reads ``incoming_message.headers()`` and uses
+``incoming_message.socket()`` first, falling back to
+``incoming_message.connection()`` when no socket handle is present. If the live
+request has no socket or connection remote address, the first returned address
+is an empty string.

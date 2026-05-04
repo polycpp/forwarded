@@ -1,9 +1,8 @@
 Installation
 ============
 
-forwarded targets C++20 and builds with clang >= 14 or gcc >= 11. It depends
-only on the base `polycpp <https://github.com/enricohuang/polycpp>`_ library
-(and none).
+forwarded targets C++20 and builds with clang >= 14 or gcc >= 11. It depends on
+the base polycpp library.
 
 CMake FetchContent (recommended)
 --------------------------------
@@ -17,7 +16,7 @@ Add the library to your ``CMakeLists.txt``:
    FetchContent_Declare(
        polycpp_forwarded
        GIT_REPOSITORY https://github.com/polycpp/forwarded.git
-       GIT_TAG        master
+       GIT_TAG        v1.0.0
    )
    FetchContent_MakeAvailable(polycpp_forwarded)
 
@@ -25,7 +24,8 @@ Add the library to your ``CMakeLists.txt``:
    target_link_libraries(my_app PRIVATE polycpp::forwarded)
 
 The first configure pulls ``polycpp`` transitively, so the build tree may be
-large. Pin ``GIT_TAG`` to a specific commit for reproducible builds.
+large. The snippet pins the 1.0.0 release; update ``GIT_TAG`` deliberately when
+you upgrade.
 
 Using a local clone
 -------------------
@@ -44,8 +44,8 @@ CMake to use them instead of fetching from GitHub:
        -DFETCHCONTENT_SOURCE_DIR_POLYCPP=/path/to/polycpp \
        -DFETCHCONTENT_SOURCE_DIR_POLYCPP_FORWARDED=/path/to/forwarded
 
-This is the path local validation can use when testing a port beside a
-polycpp checkout - see ``tests/`` in the repo.
+This lets CMake use your existing checkouts instead of downloading dependencies.
+The repository tests live under ``tests/``.
 
 Build options
 -------------
@@ -53,6 +53,9 @@ Build options
 ``POLYCPP_FORWARDED_BUILD_TESTS``
     Build the GoogleTest suite. Defaults to ``ON`` for standalone builds and
     ``OFF`` when consumed via FetchContent.
+
+``POLYCPP_FORWARDED_BUILD_EXAMPLES``
+    Build the runnable programs under ``examples/``. Defaults to ``OFF``.
 
 ``POLYCPP_IO``
     ``asio`` (default) or ``libuv`` - inherited from polycpp.

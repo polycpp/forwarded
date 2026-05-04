@@ -1,7 +1,8 @@
 How-to guides
 =============
 
-Short references for specific ``forwarded`` behaviors.
+Focused guidance for adapting upstream Node.js request-shaped data to the typed
+C++ interfaces exposed by ``polycpp::forwarded``.
 
 .. toctree::
    :maxdepth: 1

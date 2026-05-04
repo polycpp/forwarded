@@ -58,7 +58,7 @@ html_theme_options = {
     'sidebar_hide_name': False,
     'navigation_with_keys': True,
     'source_repository': 'https://github.com/polycpp/forwarded',
-    'source_branch': 'master',
+    'source_branch': 'v1.0.0',
     'source_directory': 'docs/sphinx/',
 }
 html_static_path = ['_static']
@@ -66,9 +66,10 @@ html_css_files = ['custom.css']
 html_title = f"{project} {version}"
 html_copy_source = False
 html_baseurl = 'https://polycpp.github.io/forwarded/'
+sitemap_url_scheme = '{link}'
 
 # Intersphinx to the base polycpp docs. Optional and commented by default
 # until polycpp publishes an objects.inv; swap the URL once it is live.
 # intersphinx_mapping = {
-#     'polycpp': ('https://enricohuang.github.io/polycpp/', None),
+#     'polycpp': ('https://polycpp.github.io/polycpp/', None),
 # }

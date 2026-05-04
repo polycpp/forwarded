@@ -3,6 +3,10 @@ Examples
 
 Runnable programs under ``examples/`` use only the public API.
 
+``parse_header`` and ``forwarded(remote_address, header)`` are different APIs:
+``parse_header`` returns only header entries, while the remote/header example
+below prepends the supplied remote address.
+
 .. toctree::
    :maxdepth: 1
 
